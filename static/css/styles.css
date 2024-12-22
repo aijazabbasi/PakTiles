@@ -1,0 +1,169 @@
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 5px;
+    padding: 5px;
+    background-color: #f8f9fc; /* Light background for professional look */
+    color: #212529; /* Dark gray for better readability */
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Header Styles */
+#title, header {
+    background-color: #c4daf1 !important;  /* Blue color for branding */
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+header img#logo {
+    width: 80px;
+    height: auto;
+    margin: 0 auto 5px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+header p {
+    font-size: 1.25rem;
+    font-weight: 300;
+}
+
+/* Navbar Styles */
+#main-nav {
+    background-color: #f9f9fa; /* Dark navbar for a clean contrast */
+    color: rgb(8, 8, 8);
+    padding: 1rem 0;
+    margin: 2px;
+}
+
+#main-nav .navbar-brand img {
+    height: 50px;
+    width: 50px;
+}
+
+#main-nav .btn-group a {
+    color: white;
+    margin-right: 1rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+#main-nav .btn-group a:hover {
+    color: #ffc107; /* Highlight on hover */
+}
+
+#main-nav .rounded-circle {
+    border: 2px solid #ffffff;
+}
+
+#main-nav .text-center p {
+    margin-bottom: 2px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+#main-nav a.text-decoration-none {
+    color: #ffc107;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+#main-nav a.text-decoration-none:hover {
+    color: #ffffff;
+}
+
+#containermt4 {
+  margin-top: 5px;
+}
+/* Main Content Styles */
+main#main-container {
+    padding-top: 5px;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 5px auto;
+    border-radius: 8px;
+    max-width: 1200px;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #343a40; /* Matches the navbar for consistency */
+    color: #fff;
+    padding: 1rem 0;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 30px;
+}
+
+footer p {
+    margin: 0;
+}
+
+/* Additional Styling */
+.btn {
+    border-radius: 25px;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
+#navlinks {
+  align-items: top !important;
+}
+.container {
+    max-width: 1500px;
+    align-items: top !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.page-title {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: #007bff; /* Branding color */
+}
+
+.page-subtitle {
+    font-size: 1.2rem;
+    color: #6c757d; /* Subtle gray for subtitle */
+}
+
+/* Utility Styles */
+.shadow-sm {
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.bg-primary {
+    background-color: #007bff !important;
+}
+
+.text-primary {
+    color: #007bff !important;
+}
+
+.bg-secondary {
+    background-color: #6c757d !important;
+}
+
+.text-secondary {
+    color: #6c757d !important;
+}
+
+.text-white {
+    color: white !important;
+}
+
+.rounded {
+    border-radius: 8px;
+}

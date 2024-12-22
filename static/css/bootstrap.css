@@ -1,0 +1,59 @@
+/* Add custom styles to make the tables look cleaner and integrate with Bootstrap */
+
+/* Base table font adjustment */
+.table thead th {
+  font-size: 0.9em;
+}
+
+.table tbody td input,
+.table tbody td select {
+  height: 35px;
+  font-size: 0.85em;
+}
+
+/* Style Buttons */
+.btn {
+  font-size: 0.9em;
+  padding: 5px 12px;
+}
+
+/* Adjust spacing between elements */
+h1,
+h2 {
+  text-align: center;
+  margin: 15px 0;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  h1 {
+      font-size: 18px;
+  }
+
+  .table td input {
+      font-size: 0.7em;
+  }
+
+  .btn {
+      font-size: 0.8em;
+      padding: 4px;
+  }
+}
+
+@media (max-width: 576px) {
+  .table td input {
+      font-size: 0.6em;
+  }
+
+  .btn {
+      font-size: 0.7em;
+  }
+
+  h1 {
+      font-size: 16px;
+  }
+
+  h2 {
+      font-size: 14px;
+  }
+}
