@@ -1,0 +1,51 @@
+{% extends '/Pak Tiles/PakTiles/templates/base.html' %}
+
+{% block content %}
+{% comment %} <!DOCTYPE html>
+<html> {% endcomment %}
+<head>
+    <title>Tiles Inventory</title>
+    {%load static%}
+    <link href="{%static 'css/list_tiles.css'%}" rel="stylesheet">
+</head>
+<body>
+    <h1>Tiles Inventory</h1>
+    <a href="{% url 'add_tile' %}">Add New Tile</a>
+    <table border="1">
+        <tr>
+            {% comment %} <th>ID</th> {% endcomment %}
+            <th>Category</th>
+            <th>Article Number</th>
+            <th>Description</th>
+            <th>Tile Size</th>
+            <th>Box Size</th>
+            <th>Pieces Per Box</th>
+            <th>Sale Unit</th>
+            <th>Rate</th>
+            <th>Quantity</th>
+            {% comment %} <th>Price</th> {% endcomment %}
+            <th>Actions</th>
+        </tr>
+        {% for tile in tiles %}
+        <tr>
+            {% comment %} <td>{{ tile.id }}</td> {% endcomment %}
+            <td>{{ tile.category }}</td>
+            <td>{{ tile.article_number }}</td>
+            <td>{{ tile.description }}</td>
+            <td>{{ tile.tile_size }}</td>
+            <td>{{ tile.box_size }}</td>
+            <td>{{ tile.peiece_per_box }}</td>
+            <td>{{ tile.sale_unit }}</td>
+            <td>{{ tile.rate }}</td>
+            <td>{{ tile.quantity }}</td>
+            {% comment %} <td>{{ tile.price }}</td> {% endcomment %}
+            <td>
+                <a href="{% url 'edit_tile' tile.tile_id %}">Edit</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{% url 'inventory_home' %}">Back to Inventory Home</a>
+</body>
+{% comment %} </html> {% endcomment %}
+{%endblock%}

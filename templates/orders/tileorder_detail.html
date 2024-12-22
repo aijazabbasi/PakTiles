@@ -1,0 +1,119 @@
+{% extends '/Pak Tiles/PakTiles/templates/base.html' %}
+
+{% block content %}
+<head>
+    <title>Order Details</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa; /* Light gray background */
+        }
+
+        h4, h5 {
+            color: #343a40; /* Dark gray color for headings */
+        }
+
+        .table {
+            background-color: #ffffff; /* White background for the table */
+            border-radius: 5px;
+        }
+
+        .table th {
+            background-color: #6c757d; /* Dark gray background for table headers */
+            color: #ffffff; /* White text for table headers */
+        }
+
+        .table td {
+            color: #495057; /* Dark gray for table content */
+        }
+
+        .alert {
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .alert-success {
+            background-color: #28a745; /* Green background for success */
+            color: white;
+        }
+
+        .alert-danger {
+            background-color: #dc3545; /* Red background for error */
+            color: white;
+        }
+
+        .total-amount {
+            text-align: right;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #343a40; /* Dark gray color */
+        }
+
+        .btn-success {
+            background-color: #6c757d; /* Dark gray button */
+            border-color: #6c757d;
+        }
+
+        .btn-success:hover {
+            background-color: #495057; /* Darker gray on hover */
+            border-color: #495057;
+        }
+
+        .btn {
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<div class="container py-4">
+    <p><strong>Customer Name:</strong> {{ order.customer_name }}</p>
+    <p><strong>Customer Phone:</strong> {{ order.customer_phone }}</p>
+
+    <h5>Tile Order Details</h5>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Article Number</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Tile Size</th>
+                <th>Rate</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tile in tile_details %}
+            <tr>
+                <td>{{ tile.article_number }}</td>
+                <td>{{ tile.category }}</td>
+                <td>{{ tile.description }}</td>
+                <td>{{ tile.tile_size }}</td>
+                <td>{{ tile.rate }}</td>
+                <td>{{ tile.quantity }}</td>
+                <td>{{ tile.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total-amount">
+        Total Amount: {{ total_amount }}
+    </div>
+
+    {% if message_sent %}
+    <div class="alert alert-success">Order details sent successfully via WhatsApp!</div>
+    {% elif message_sent is not none %}
+    <div class="alert alert-danger">Failed to send order details via WhatsApp. Please try again.</div>
+    {% endif %}
+
+    <!-- Form to send the order details to WhatsApp -->
+    {% if not request.GET.hide_button %}
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="send_whatsapp" class="btn btn-success">Send to WhatsApp</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

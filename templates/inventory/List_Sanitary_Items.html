@@ -1,0 +1,41 @@
+{% extends '/Pak Tiles/PakTiles/templates/base.html' %}
+
+{% block content %}
+{% comment %} <!DOCTYPE html>
+<html> {% endcomment %}
+<head>
+    <title>Sanitary Items</title>
+    {%load static%}
+    <link href="{%static 'css/list_tiles.css'%}" rel="stylesheet">
+</head>
+<body>
+    <h1>Sanitary Items</h1>
+    <a href="{% url 'add_sanitary_item' %}">Add New Sanitary Item</a>
+    <table border="1">
+        <tr>
+            {% comment %} <th>ID</th> {% endcomment %}
+            <th>Article Number</th>
+            <th>Name</th>
+            <th>Brand</th>
+            <th>Rate</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            {% comment %} <td>{{ item.id }}</td> {% endcomment %}
+            <td>{{ item.article_number }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.brand }}</td>
+            <td>{{ item.rate }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>
+                <a href="{% url 'edit_sanitary_item' item.item_id %}">Edit</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{% url 'inventory_home' %}">Back to Inventory Home</a>
+</body>
+{% comment %} </html> {% endcomment %}
+{%endblock%}

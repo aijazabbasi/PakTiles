@@ -1,0 +1,103 @@
+{% extends '/Pak Tiles/PakTiles/templates/base.html' %}
+
+{% block content %}
+<head>
+    <title>Edit Tile</title>
+    {% load static %}
+    <!-- Add the Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'css/edit_tile.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Edit Tile</h1>
+        <div class="form-container">
+            <form method="post">
+                {% csrf_token %}
+                
+                <!-- Category -->
+                <div class="row mb-3">
+                    <label for="id_category" class="col-sm-4 col-form-label text-end">Category:</label>
+                    <div class="col-sm-8">
+                        {{ form.category }}
+                    </div>
+                </div>
+                
+                <!-- Article Number -->
+                <div class="row mb-3">
+                    <label for="id_article_number" class="col-sm-4 col-form-label text-end">Article Number:</label>
+                    <div class="col-sm-8">
+                        {{ form.article_number }}
+                    </div>
+                </div>
+                
+                <!-- Description -->
+                <div class="row mb-3">
+                    <label for="id_description" class="col-sm-4 col-form-label text-end">Description:</label>
+                    <div class="col-sm-8">
+                        {{ form.description }}
+                    </div>
+                </div>
+                
+                <!-- Tile Size -->
+                <div class="row mb-3">
+                    <label for="id_tile_size" class="col-sm-4 col-form-label text-end">Tile Size:</label>
+                    <div class="col-sm-8">
+                        {{ form.tile_size }}
+                    </div>
+                </div>
+                
+                <!-- Box Size -->
+                <div class="row mb-3">
+                    <label for="id_box_size" class="col-sm-4 col-form-label text-end">Box Size:</label>
+                    <div class="col-sm-8">
+                        {{ form.box_size }}
+                    </div>
+                </div>
+                
+                <!-- Pieces per Box -->
+                <div class="row mb-3">
+                    <label for="id_piece_per_box" class="col-sm-4 col-form-label text-end">Pieces per Box:</label>
+                    <div class="col-sm-8">
+                        {{ form.peiece_per_box }}
+                    </div>
+                </div>
+                
+                <!-- Sale Unit -->
+                <div class="row mb-3">
+                    <label for="id_sale_unit" class="col-sm-4 col-form-label text-end">Sale Unit:</label>
+                    <div class="col-sm-8">
+                        {{ form.sale_unit }}
+                    </div>
+                </div>
+                
+                <!-- Rate -->
+                <div class="row mb-3">
+                    <label for="id_rate" class="col-sm-4 col-form-label text-end">Rate:</label>
+                    <div class="col-sm-8">
+                        {{ form.rate }}
+                    </div>
+                </div>
+                
+                <!-- Quantity -->
+                <div class="row mb-3">
+                    <label for="id_quantity" class="col-sm-4 col-form-label text-end">Quantity:</label>
+                    <div class="col-sm-8">
+                        {{ form.quantity }}
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-custom w-100">Update Tile</button>
+            </form>
+            
+            <!-- Back Link -->
+            <a href="{% url 'list_tiles' %}" class="back-link">Back to Tiles List</a>
+        </div>
+    </div>
+
+    <!-- Add the Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+{% endblock %}
