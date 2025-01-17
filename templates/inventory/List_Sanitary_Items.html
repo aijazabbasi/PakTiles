@@ -1,4 +1,4 @@
-{% extends '/Pak Tiles/PakTiles/templates/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
 {% comment %} <!DOCTYPE html>
@@ -10,6 +10,11 @@
 </head>
 <body>
     <h1>Sanitary Items</h1>
+    <!-- Search Form -->
+    <form method="get" action="">
+        <input type="text" name="query" placeholder="Search by Article Number or Name or Brand" value="{{ query }}">
+        <button type="submit">Search</button>
+    </form>
     <a href="{% url 'add_sanitary_item' %}">Add New Sanitary Item</a>
     <table border="1">
         <tr>

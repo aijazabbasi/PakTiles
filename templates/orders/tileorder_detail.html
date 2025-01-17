@@ -1,4 +1,4 @@
-{% extends '/Pak Tiles/PakTiles/templates/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
 <head>
@@ -43,7 +43,7 @@
             color: white;
         }
 
-        .total-amount {
+        .total-amount, .balance-amount {
             text-align: right;
             font-weight: bold;
             margin-top: 20px;
@@ -102,17 +102,19 @@
         Total Amount: {{ total_amount }}
     </div>
 
-    {% if message_sent %}
-    <div class="alert alert-success">Order details sent successfully via WhatsApp!</div>
-    {% elif message_sent is not none %}
-    <div class="alert alert-danger">Failed to send order details via WhatsApp. Please try again.</div>
-    {% endif %}
-
-    <!-- Form to send the order details to WhatsApp -->
     {% if not request.GET.hide_button %}
-    <form method="post">
+
+    <form method="post" class="mt-4" target="_blank">
         {% csrf_token %}
-        <button type="submit" name="send_whatsapp" class="btn btn-success">Send to WhatsApp</button>
+        <!-- <div class="mb-3">
+            <label for="paidAmount" class="form-label"><strong>Paid Amount:</strong></label>
+            <input type="number" class="form-control" id="paidAmount" name="paid_amount" value="{{ paid_amount }}" step="0.01" min="0">
+        </div>
+        <div class="balance-amount">
+            Balance Amount: {{ balance_amount }}
+        </div>
+        <button type="submit" name="update_balance" class="btn btn-primary mt-3">Update Balance</button> -->
+        <button type="submit" name="print_pdf" class="btn btn-success mt-3" target="_blank">Print</button>
     </form>
     {% endif %}
 </div>

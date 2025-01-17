@@ -1,4 +1,4 @@
-{% extends '/Pak Tiles/PakTiles/templates/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
@@ -9,14 +9,18 @@
 
         <!-- Customer Info Section -->
         <div id="row-mb3" class="row mb-3">
-            <div class="col-md-6 d-flex">
-                <div id="me-3" class="me-3">
+            <div class="col-md-12 d-flex">
+                <div class="me-3">
                     <label for="id_customer_name" class="form-label">Customer Name</label>
                     {{ order_form.customer_name }}
                 </div>
-                <div>
+                <div class="me-3">
                     <label for="id_customer_phone" class="form-label">Customer Phone</label>
                     {{ order_form.customer_phone }}
+                </div>
+                <div class="me-3">
+                    <label for="id_bill_number" class="form-label">Bill Number</label>
+                    {{ order_form.bill_number }}
                 </div>
             </div>
         </div>      
@@ -64,8 +68,8 @@
         </table>    
 
         <div class="mt-4 d-flex">
-            <button type="submit" class="btn btn-primary">Submit Order</button>
-            <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel Order</button>
+            <button type="submit" class="btn btn-primary mx-1">Submit Order</button>
+            <button type="button" class="btn btn-secondary mx-1" onclick="window.history.back()">Cancel Order</button>
         </div>
     </form>
 </div>

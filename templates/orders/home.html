@@ -1,4 +1,4 @@
-{% extends '/Pak Tiles/PakTiles/templates/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
 <head>
@@ -43,7 +43,12 @@
         <ul>
             <li><a href="{% url 'create_order' %}">Create Tile Order</a></li>
             <li><a href="{% url 'create_sanitaryorder' %}">Create Sanitary Item Order</a></li>
+            <li><a href="{% url 'create_refundorder' %}">Create Tile Refund Order</a></li>
+            <li><a href="{% url 'create_sanitaryrefundorder' %}">Create Sanitary Item Refund Order</a></li>
             <li><a href="{% url 'tileorder_list' %}">View Tile Orders</a></li>
+            <li><a href="{% url 'sanitaryorder_list' %}">View Sanitary Orders</a></li>
+            <li><a href="{% url 'tilerefundorder_list' %}">View Tile Refund Orders</a></li>
+            <li><a href="{% url 'sanitaryrefundorder_list' %}">View Sanitary Refund Orders</a></li>
         </ul>
     </div>
 

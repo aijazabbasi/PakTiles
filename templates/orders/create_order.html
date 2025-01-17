@@ -1,4 +1,4 @@
-{% extends '/Pak Tiles/PakTiles/templates/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
@@ -10,14 +10,18 @@
 
         <!-- Customer Info Section -->
         <div class="row mb-3">
-            <div class="col-md-6 d-flex">
+            <div class="col-md-12 d-flex">
                 <div class="me-3">
                     <label for="id_customer_name" class="form-label">Customer Name</label>
                     {{ order_form.customer_name }}
                 </div>
-                <div>
+                <div class="me-3">
                     <label for="id_customer_phone" class="form-label">Customer Phone</label>
                     {{ order_form.customer_phone }}
+                </div>
+                <div class="me-3">
+                    <label for="id_bill_number" class="form-label">Bill Number</label>
+                    {{ order_form.bill_number }}
                 </div>
             </div>
         </div>
@@ -74,8 +78,8 @@
         </table>    
 
         <div class="mt-4 d-flex">
-            <button type="submit" class="btn btn-primary">Submit Order</button>
-            <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel Order</button>
+            <button type="submit" class="btn btn-primary mx-1">Submit Order</button>
+            <button type="button" class="btn btn-secondary mx-1" onclick="window.history.back()">Cancel Order</button>
         </div>
     </form>
 </div>
@@ -129,7 +133,7 @@
         $(document).on('input', '[name$="rate"], [name$="quantity"]', function () {
             const row = $(this).closest('.tile-row');
             const rate = parseFloat(row.find('[name$="rate"]').val()) || 0;
-            const quantity = parseInt(row.find('[name$="quantity"]').val()) || 0;
+            const quantity = parseFloat(row.find('[name$="quantity"]').val()) || 0;
             const price = rate * quantity;
             row.find('.price-field').val(price.toFixed(2));
     
@@ -173,7 +177,7 @@
 
         $(document).on('input', '[name$="quantity"]', function () {
             const row = $(this).closest('.tile-row');
-            const quantity = parseInt(row.find('[name$="quantity"]').val()) || 0;
+            const quantity = parseFloat(row.find('[name$="quantity"]').val()) || 0;
             const articleNumber = row.find('[name$="article_number"]').val();
         
             // Fetch available stock for the article
@@ -208,7 +212,7 @@
         max-height: 500px;
         overflow-y: auto;
         margin: 1 px;
-        padding 1 px;
+        padding: 1 px;
     }
 
     /* Align customer name and phone on the same line */
@@ -276,7 +280,7 @@
     /* Action Button Style */
     .btn-success {
         font-size: 0.8rem;
-        max-width: 100%%;
+        max-width: 100%;
     }
 
     /* Subtotal input styles */

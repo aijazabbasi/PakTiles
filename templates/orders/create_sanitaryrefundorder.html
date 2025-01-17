@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div id="containermt4" class="container mt-4" style="max-height: 500px; overflow-y: auto;">
+    
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Customer Info Section -->
+        <div id="row-mb3" class="row mb-3">
+            <div class="col-md-12 d-flex">
+                <div class="me-3">
+                    <label for="id_customer_name" class="form-label">Customer Name</label>
+                    {{ order_form.customer_name }}
+                </div>
+                <div class="me-3">
+                    <label for="id_customer_phone" class="form-label">Customer Phone</label>
+                    {{ order_form.customer_phone }}
+                </div>
+                <div class="me-3">
+                    <label for="id_bill_number" class="form-label">Bill Number</label>
+                    {{ order_form.bill_number }}
+                </div>
+            </div>
+        </div>      
+        <!-- Sanitary Items Section -->
+        <h5 class="mb-3">Sanitary Items Refund Order</h5>
+        <table id="sanitary-formset-table" class="table table-bordered table-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>Article Number</th>
+                    <th>Name</th>
+                    <th>Brand</th>
+                    <th>Rate</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="sanitary-formset">
+                {{ formset1.management_form }}
+                {% for form in formset1 %}
+                    <tr class="sanitary-row">
+                        <td>{{ form.article_number }}</td>
+                        <td>{{ form.name }}</td>
+                        <td>{{ form.brand }}</td>
+                        <td>{{ form.rate }}</td>
+                        <td>{{ form.quantity }}</td>
+                        <td><input id="sanitary-price-box" type="text" readonly class="sanitary-price-field form-control form-control-sm"></td>
+                        <td class="text-center">
+                            {% if forloop.last %}
+                                <button type="button" class="btn btn-success btn-sm add-sanitary-row">Add Item</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5" class="text-end"><strong>Sub-Total:</strong></td>
+                    <td>
+                        <input type="text" id="subtotal" class="form-control form-control-sm text-end" readonly value="0.00">
+                        <input type="hidden" name="sanitary_total" id="hidden-subtotal" value="0.00">
+                    </td>
+                </tr>
+            </tfoot>
+        </table>    
+
+        <div class="mt-4 d-flex">
+            <button type="submit" class="btn btn-primary">Submit Order</button>
+            <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel Order</button>
+        </div>
+    </form>
+</div>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        const sanitaryFormset = $('#sanitary-formset');
+        const totalSanitaryFormsInput = $('#id_sanitary_details-TOTAL_FORMS')
+        
+        $(document).on('click', '.add-sanitary-row', function () {
+            const totalsanitaryForms = parseInt($('#id_sanitary_details-TOTAL_FORMS').val());
+            const lastsanitaryRow = $('#sanitary-formset').find('.sanitary-row:last');
+            const newSanitaryRow = lastsanitaryRow.clone(true);
+    
+            // Update formset indices in the new row
+            updateSanitaryFormIndices(newSanitaryRow, totalsanitaryForms);
+    
+            // Remove the "+" button from all rows and add it only to the new row
+            $('#sanitary-formset').find('.add-sanitary-row').remove();
+            newSanitaryRow.find('td:last').html('<button type="button" class="btn btn-success btn-sm add-sanitary-row" style="cursor: pointer;">add_item</button>');
+    
+            // Append the new row and increment TOTAL_FORMS
+            
+            $('#sanitary-formset').append(newSanitaryRow);
+            $('#id_sanitary_details-TOTAL_FORMS').val(totalsanitaryForms + 1);
+    
+    
+            updateSanitarySubTotal(); // Update the subtotal after adding a new row
+        });
+        
+        $(document).on('change', '[name$="article_number"]', function () {
+            const articleNumber = $(this).val();
+            const row = $(this).closest('.sanitary-row');
+            $.get('/get_sanitary_data/', { article_number: articleNumber }, function (data) {
+                if (data) {
+                    row.find('[name$="name"]').val(data.name);
+                    row.find('[name$="brand"]').val(data.brand);
+                    row.find('[name$="rate"]').val(data.rate);
+                }
+            });
+        });
+    
+        // Automatically calculate price when rate or quantity changes
+       // Automatically calculate price when rate or quantity changes for sanitary item
+        $(document).on('input', '[name$="rate"], [name$="quantity"]', function () {
+            const row = $(this).closest('.sanitary-row');
+            const rate = parseFloat(row.find('[name$="rate"]').val()) || 0;
+            const quantity = parseInt(row.find('[name$="quantity"]').val()) || 0;
+            const price = rate * quantity;
+            row.find('.sanitary-price-field').val(price.toFixed(2));
+    
+            updateSanitarySubTotal(); // Update the subtotal when a row is updated
+        });
+
+    
+        // Function to calculate and update the subtotal
+        // Function to calculate and update the subtotal
+        function updateSanitarySubTotal() {
+            let subTotal = 0;
+    
+            $('#sanitary-formset .sanitary-row').each(function () {
+                const price = parseFloat($(this).find('.sanitary-price-field').val()) || 0;
+                subTotal += price;
+            });
+    
+            $('#subtotal').val(subTotal.toFixed(2));
+            $('#hidden-subtotal').val(subTotal.toFixed(2)); // Update hidden field
+        }
+    
+        function updateSanitaryFormIndices(row, newIndex) {
+            row.find(':input').each(function () {
+                const name = $(this).attr('name');
+                const id = $(this).attr('id');
+    
+                if (name) {
+                    $(this).attr('name', name.replace(/-\d+-/, `-${newIndex}-`));
+                }
+                if (id) {
+                    $(this).attr('id', id.replace(/-\d+-/, `-${newIndex}-`));
+                }
+    
+                // Clear input values except for management form inputs
+                if (!$(this).is('[type="hidden"]')) {
+                    $(this).val('');
+                }
+            });
+    
+            // Reset price field
+            row.find('.sanitary-price-field').val('');
+        }
+
+    });
+</script>
+<style>
+    #cso {
+        color: black;
+        margin-bottom: 1px;
+    }
+    #row-mb3{
+        margin:0px;
+        margin-bottom: 0px;
+        height: 80px;
+        left-padding: 0px;
+    }
+    #me-3{
+        margin: 0px;
+        padding: 0px;
+    }
+    /* General Reset */
+    * {
+        margin: 1px;
+        padding: 1px;
+        box-sizing: border-box;
+    }
+
+    /* Table Styling */
+    #sanitary-formset-table {
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    #sanitary-formset-table th,
+    #sanitary-formset-table td {
+        padding: 4px;
+        font-size: 0.8rem;
+        border: 1px solid #dee2e6;
+    }
+
+    /* Alternate Row Background */
+    #sanitary-formset-table tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    /* Subtotal input style */
+    #subtotal {
+        font-size: 0.9rem;
+        max-width: 120px;
+    }
+
+    /* Responsiveness for small screens */
+    @media (max-width: 768px) {
+        #sanitary-formset-table {
+            overflow-x: auto;
+            display: block;
+        }
+    }
+    /* General Reset */
+    * {
+        margin: 1px;
+        padding: 1px;
+        box-sizing: border-box;
+    }
+
+    /* Body Font */
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+    }
+
+    /* Table Styles */
+    
+    #sanitary-formset-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    /* Table Head Styling */
+    #sanitary-formset-table thead {
+        background-color: #343a40;
+        color: #ffffff;
+    }
+
+    #sanitary-formset-table th,
+    #sanitary-formset-table td {
+        padding: 2px;
+        text-align: left;
+        font-size: 0.7rem;
+        border: 1px solid #dee2e6;
+        
+    }
+
+    /* Row Alternate Background */
+    #sanitary-formset-table tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    #pricebox {
+        
+        max-width: 115px;
+    }
+    /* Action Button Style */
+    .btn-success {
+        font-size: 0.8rem;
+        max-width: 100%%;
+    }
+
+    /* Subtotal input styles */
+    #subtotal {
+        font-size: 0.9rem;
+        max-width: 120px;
+    }
+
+    /* Responsiveness */
+    @media (max-width: 768px) {
+        #sanitary-formset-table {
+            overflow-x: auto;
+            display: block;
+        }
+
+        #sanitary-formset-table thead,
+        #sanitary-formset-table tbody {
+            display: block;
+        }
+
+        #sanitary-formset-table tr {
+            display: block;
+            width: 100%;
+        }
+
+        #sanitary-formset-table td {
+            display: block;
+            text-align: left;
+        }
+
+        .btn-success {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}

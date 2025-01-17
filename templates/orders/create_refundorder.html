@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4" style="max-height: 500px; overflow-y: auto;">
+
+    <!-- Header Section -->
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Customer Info Section -->
+        <div class="row mb-3">
+            <div class="col-md-12 d-flex">
+                <div class="me-3">
+                    <label for="id_customer_name" class="form-label">Customer Name</label>
+                    {{ order_form.customer_name }}
+                </div>
+                <div class="me-3">
+                    <label for="id_customer_phone" class="form-label">Customer Phone</label>
+                    {{ order_form.customer_phone }}
+                </div>
+                <div class="me-3">
+                    <label for="id_bill_number" class="form-label">Bill Number</label>
+                    {{ order_form.bill_number }}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tiles Section -->
+        <h5 class="mb-3">Tiles Refund Order</h5>
+        <table id="tile-formset-table" class="table table-bordered table-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>Article</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Tile Size</th>
+                    <th>Box Size</th>
+                    <th>Pieces/Box</th>
+                    <th>Sale Unit</th>
+                    <th>Rate</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="tile-formset">
+                {{ formset.management_form }}
+                {% for form in formset %}
+                    <tr class="tile-row">
+                        <td>{{ form.article_number }}</td>
+                        <td>{{ form.category }}</td>
+                        <td>{{ form.description }}</td>
+                        <td>{{ form.tile_size }}</td>
+                        <td>{{ form.box_size }}</td>
+                        <td>{{ form.peiece_per_box }}</td>
+                        <td>{{ form.sale_unit }}</td>
+                        <td>{{ form.rate }}</td>
+                        <td>{{ form.quantity }}</td>
+                        <td><input id="pricebox" type="text" readonly class="price-field form-control form-control-sm"></td>
+                        <td class="text-center">
+                            {% if forloop.last %}
+                                <button type="button" class="btn btn-success btn-sm add-tile-row">Add Item</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="9" class="text-end"><strong>Sub-Total:</strong></td>
+                    <td>
+                        <input type="text" id="subtotal" class="form-control form-control-sm text-end" readonly value="0.00">
+                        <input type="hidden" name="tiles_total" id="hidden-subtotal" value="0.00">
+                    </td>
+                </tr>
+            </tfoot>
+        </table>    
+
+        <div class="mt-4 d-flex">
+            <button type="submit" class="btn btn-primary">Submit Order</button>
+            <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel Order</button>
+        </div>
+    </form>
+</div>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        const tileFormset = $('#tile-formset');
+        const totalFormsInput = $('#id_tile_details-TOTAL_FORMS');
+        
+        // Add a new tile row
+        $(document).on('click', '.add-tile-row', function () {
+            const totalForms = parseInt($('#id_tile_details-TOTAL_FORMS').val());
+            const lastRow = $('#tile-formset').find('.tile-row:last');
+            const newRow = lastRow.clone(true);
+            
+            // Update formset indices in the new row
+            updateFormIndices(newRow, totalForms);
+            
+            // Remove the "+" button from all rows and add it only to the new row
+            //$('#tile-formset').find('.add-tile-row').remove();
+            newRow.find('td:last').html('<button type="button" class="btn btn-success btn-sm add-tile-row" style="cursor: pointer;">add_item</button>');
+
+            // Append the new row and increment TOTAL_FORMS
+            $('#tile-formset').append(newRow);
+            $('#id_tile_details-TOTAL_FORMS').val(totalForms + 1);
+    
+            updateSubTotal(); // Update the subtotal after adding a new row
+        });
+        
+        // Fetch tile data dynamically
+        $(document).on('change', '[name$="article_number"]', function () {
+            const articleNumber = $(this).val();
+            const row = $(this).closest('.tile-row');
+            $.get('/get_tile_data/', { article_number: articleNumber }, function (data) {
+                if (data) {
+                    row.find('[name$="category"]').val(data.category);
+                    row.find('[name$="description"]').val(data.description);
+                    row.find('[name$="tile_size"]').val(data.tile_size);
+                    row.find('[name$="box_size"]').val(data.box_size);
+                    row.find('[name$="peiece_per_box"]').val(data.peiece_per_box);
+                    row.find('[name$="sale_unit"]').val(data.sale_unit);
+                    row.find('[name$="rate"]').val(data.rate);
+                }
+            });
+        });
+
+        // Automatically calculate price when rate or quantity changes
+        $(document).on('input', '[name$="rate"], [name$="quantity"]', function () {
+            const row = $(this).closest('.tile-row');
+            const rate = parseFloat(row.find('[name$="rate"]').val()) || 0;
+            const quantity = parseFloat(row.find('[name$="quantity"]').val()) || 0;
+            const price = rate * quantity;
+            row.find('.price-field').val(price.toFixed(2));
+    
+            updateSubTotal(); // Update the subtotal when a row is updated
+        });
+    
+        // Function to calculate and update the subtotal
+        function updateSubTotal() {
+            let subTotal = 0;
+    
+            $('#tile-formset .tile-row').each(function () {
+                const price = parseFloat($(this).find('.price-field').val()) || 0;
+                subTotal += price;
+            });
+    
+            $('#subtotal').val(subTotal.toFixed(2));
+            $('#hidden-subtotal').val(subTotal.toFixed(2)); // Update hidden field
+        }
+
+        function updateFormIndices(row, newIndex) {
+            row.find(':input').each(function () {
+                const name = $(this).attr('name');
+                const id = $(this).attr('id');
+    
+                if (name) {
+                    $(this).attr('name', name.replace(/-\d+-/, `-${newIndex}-`));
+                }
+                if (id) {
+                    $(this).attr('id', id.replace(/-\d+-/, `-${newIndex}-`));
+                }
+    
+                // Clear input values except for management form inputs
+                if (!$(this).is('[type="hidden"]')) {
+                    $(this).val('');
+                }
+            });
+    
+            // Reset price field
+            row.find('.price-field').val('');
+        }
+
+        $(document).on('input', '[name$="quantity"]', function () {
+            const row = $(this).closest('.tile-row');
+            const quantity = parseFloat(row.find('[name$="quantity"]').val()) || 0;
+            const articleNumber = row.find('[name$="article_number"]').val();
+        
+            // Fetch available stock for the article
+            $.get('/get_available_stock/', { article_number: articleNumber }, function (data) {
+                if (data) {
+                    const availableQuantity = data.available_quantity;
+        
+                    // Check if the entered quantity is less than or equal to available stock
+                    if (quantity < 0) {
+                        alert('Refund Ordered quantity is less than 0, please add positive quantity for this article to refund');
+                        row.find('[name$="quantity"]').val(quantity); // Reset to available stock
+                        }
+        
+                    // Update price and subtotal after validation
+                    const rate = parseFloat(row.find('[name$="rate"]').val()) || 0;
+                    const price = rate * quantity;
+                    row.find('.price-field').val(price.toFixed(2));
+            
+                    updateSubTotal(); // Update the subtotal when a row is updated
+                }
+            });
+        });
+        
+
+    });
+</script>
+<style>
+    
+    /* Scrollable main container */
+    .container.mt-4 {
+        max-height: 500px;
+        overflow-y: auto;
+        margin: 1 px;
+        padding: 1 px;
+    }
+
+    /* Align customer name and phone on the same line */
+    .col-md-6.d-flex div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Fix table styles */
+    #tile-formset-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    /* Responsive submit button visibility */
+    .btn-primary {
+        position: sticky;
+        bottom: 0;
+    }
+
+    /* General Reset */
+    * {
+        margin: 1px;
+        padding: 1px;
+        box-sizing: border-box;
+    }
+
+    /* Body Font */
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+    }
+
+    /* Table Styles */
+    #tile-formset-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    /* Table Head Styling */
+    #tile-formset-table thead {
+        background-color: #343a40;
+        color: #ffffff;
+    }
+
+    #tile-formset-table th,
+    #tile-formset-table td {
+        padding: 2px;
+        text-align: left;
+        font-size: 0.7rem;
+        border: 1px solid #dee2e6;
+        
+    }
+
+    /* Row Alternate Background */
+    #tile-formset-table tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+ 
+    #pricebox {
+        
+        max-width: 115px;
+    }
+    /* Action Button Style */
+    .btn-success {
+        font-size: 0.8rem;
+        max-width: 100%;
+    }
+
+    /* Subtotal input styles */
+    #subtotal {
+        font-size: 0.9rem;
+        max-width: 120px;
+    }
+
+    /* Responsiveness */
+    @media (max-width: 768px) {
+        #tile-formset-table {
+            overflow-x: auto;
+            display: block;
+        }
+
+        #tile-formset-table thead,
+        #tile-formset-table tbody {
+            display: block;
+        }
+
+        #tile-formset-table tr {
+            display: block;
+            width: 100%;
+        }
+
+        #tile-formset-table td {
+            display: block;
+            text-align: left;
+        }
+
+        .btn-success {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
