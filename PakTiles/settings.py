@@ -26,9 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-3=h$4ilme2+k(d3t!=2^v(67=6lxmpx9h7lszs80dih_$ovav('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app', 'now.sh', '127.0.0.1','localhost']
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
 
 # Application definition
@@ -80,32 +80,32 @@ WSGI_APPLICATION = 'PakTiles.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         # 'ENGINE': 'django.db.backends.sqlite3',
-#         # 'NAME': BASE_DIR / 'db.sqlite3',
-#         'ENGINE': 'mssql',
-#         'NAME': 'PakTiles',
-#         'USER':'sa',
-#         'PASSWORD': 'Hazratwala!23',
-#         'HOST': 'EWORXLAP-141\\PAKTILEDB',
-#         'OPTIONS':{
-#           'driver': 'ODBC Driver 17 for SQL Server',
-#           'Trusted_Connection': 'yes',
-#         },
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'RDjgfbbuHvoKMnPOTROYuBnxCcofJSpy',
-        'HOST': 'postgres.railway.internal',
-        'PORT': '5432',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'mssql',
+        'NAME': 'PakTiles',
+        'USER':'sa',
+        'PASSWORD': 'Hazratwala!23',
+        'HOST': 'EWORXLAP-141\\PAKTILEDB',
+        'OPTIONS':{
+          'driver': 'ODBC Driver 17 for SQL Server',
+          'Trusted_Connection': 'yes',
+        },
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'railway',
+#         'USER': 'postgres',
+#         'PASSWORD': 'RDjgfbbuHvoKMnPOTROYuBnxCcofJSpy',
+#         'HOST': 'postgres.railway.internal',
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
